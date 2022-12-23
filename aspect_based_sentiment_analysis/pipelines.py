@@ -11,7 +11,7 @@ import numpy as np
 import tensorflow as tf
 import transformers
 import nltk
-
+nltk.download('punkt')
 
 from . import alignment
 from . import utils
