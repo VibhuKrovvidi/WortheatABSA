@@ -10,6 +10,8 @@ from typing import List
 import numpy as np
 import tensorflow as tf
 import transformers
+import nltk
+
 
 from . import alignment
 from . import utils
@@ -47,7 +49,7 @@ class _Pipeline(ABC):
     """
 
     @abstractmethod
-    def __call__(self, text: str, aspects: List[str]) -> CompletedTask:
+    def __call__(self, text: str) -> CompletedTask:
         """
         The __call__ method is for the basic inference to make predictions.
 
@@ -202,15 +204,29 @@ class Pipeline(_Pipeline):
     professor: Professor
     text_splitter: Callable[[str], List[str]] = None
 
-    def __call__(self, text: str, aspects: List[str]) -> CompletedTask:
-        task = self.preprocess(text, aspects)
+
+
+    def __call__(self, text: str) -> CompletedTask:
+
+        # Removed aspect input
+
+
+
+        task = self.preprocess(text)
         predictions = self.transform(task.examples)
         completed_task = self.postprocess(task, predictions)
         return completed_task
 
-    def preprocess(self, text: str, aspects: List[str]) -> Task:
+    def preprocess(self, text: str) -> Task:
         spans = self.text_splitter(text) if self.text_splitter else [text]
         subtasks = OrderedDict()
+        
+        # Find all nouns --> Label as aspects
+        pos_tag_input = nltk.word_tokenize(text)
+        tags = nltk.pos_tag(pos_tag_input)
+        aspects = [word for word,pos in tags if (pos == 'NN' or pos == 'NNP' or pos == 'NNS' or pos == 'NNPS')]
+
+
         for aspect in aspects:
             examples = [Example(span, aspect) for span in spans]
             subtasks[aspect] = SubTask(text, aspect, examples)
