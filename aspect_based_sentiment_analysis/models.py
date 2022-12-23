@@ -8,7 +8,8 @@ import numpy as np
 import transformers
 import tensorflow as tf
 from tensorflow.keras import layers
-from transformers.modeling_tf_utils import TFModelInputType
+# from transformers.modeling_tf_utils import TFModelInputType
+TFModelInputType = None
 
 logger = logging.getLogger('absa.model')
 
