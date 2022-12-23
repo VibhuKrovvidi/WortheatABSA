@@ -12,6 +12,7 @@ import tensorflow as tf
 import transformers
 import nltk
 nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
 
 from . import alignment
 from . import utils
